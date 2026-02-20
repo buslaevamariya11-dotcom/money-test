@@ -7,11 +7,12 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
       - name: Set up JDK 11
         uses: actions/setup-java@v3
@@ -22,22 +23,23 @@ jobs:
       - name: Install Chrome
         uses: browser-actions/setup-chrome@v1
 
+      - name: Show Chrome path
+        run: echo "CHROME PATH = $(which google-chrome)"
+
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      # ⏳ 1. ЗАПУСК ТВОЕГО ПРИЛОЖЕНИЯ
-      - name: Start IBank Application
+      # Запуск приложения
+      - name: Run IBank App
         run: |
           nohup java -jar artifacts/app-ibank-build-for-testers.jar > app.log 2>&1 &
           sleep 7
-        shell: bash
 
-      # ⏳ 2. Проверим, что localhost:9999 стал доступен
-      - name: Check server is running
+      - name: Check server availability
         run: |
           for i in {1..10}; do
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:9999)
-            if [ "$STATUS" == "200" ]; then
+            if [ "$STATUS" = "200" ]; then
               echo "Server is UP!"
               exit 0
             fi
@@ -48,14 +50,11 @@ jobs:
           cat app.log
           exit 1
 
-      # 🚀 3. ЗАПУСК ТЕСТОВ
-      - name: Run tests
+      - name: Run Tests
         env:
-          CHROME_BIN: ${{ env.CHROME_BIN }}
+          CHROME_BIN: /usr/bin/google-chrome
         run: |
           ./gradlew clean test \
             -Dselenide.browser=chrome \
             -Dselenide.headless=true \
-            -Dselenide.browserBinary=$CHROME_BIN \
-            -Dchromeoptions.args=--no-sandbox,--disable-dev-shm-usage \
-            -Dchromeoptions.prefs=profile.password_manager_leak_detection=false
+            -Dchromeoptions.args="--no-sandbox,--disable-dev-shm-usage,--disable-gpu,--remote-allow-origins=*"
