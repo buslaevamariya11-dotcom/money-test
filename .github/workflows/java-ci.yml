@@ -23,12 +23,12 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      - name: Run SUT (Start Bank App)
-        # Запуск приложения в фоне
+      - name: Run SUT (Start App)
+        # Запускаем ваш JAR файл в фоновом режиме
         run: java -jar artifacts/app-ibank-build-for-testers.jar &
 
       - name: Run tests
-        # Запуск тестов в режиме без графического окна (headless)
+        # Добавляем флаги для Selenide: headless (без окна) и отключение песочницы Chrome
         run: |
           ./gradlew clean test \
             -Dselenide.headless=true \
