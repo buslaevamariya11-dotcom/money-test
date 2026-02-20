@@ -19,11 +19,17 @@ jobs:
           java-version: '11'
           distribution: 'temurin'
 
+      - name: Install Chrome
+        uses: browser-actions/setup-chrome@v1
+
       - name: Make gradlew executable
         run: chmod +x gradlew
 
       - name: Run tests (headless)
+        env:
+          selenide_headless: true
         run: |
           ./gradlew clean test \
+          -Dselenide.browser=chrome \
           -Dselenide.headless=true \
           -Dchromeoptions.prefs=profile.password_manager_leak_detection=false
