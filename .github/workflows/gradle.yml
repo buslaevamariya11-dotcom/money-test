@@ -2,9 +2,9 @@ name: Java CI with Gradle
 
 on:
   push:
-    branches: ["main"]
+    branches: [ "main" ]
   pull_request:
-    branches: ["main"]
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -23,12 +23,12 @@ jobs:
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      - name: Run SUT (Start Bank App)
-        # ВНИМАНИЕ: Проверьте, что папка называется именно "артефакты"
+      - name: Run SUT (Start App)
+        # Убедитесь, что папка в репозитории называется именно "артефакты"
         run: java -jar артефакты/app-ibank-build-for-testers.jar &
 
       - name: Run tests
-        # Запуск в headless-режиме, чтобы не было ошибки SessionNotCreatedException
+        # Эти флаги заставляют Selenide работать без открытия окна (headless)
         run: |
           ./gradlew clean test \
             -Dselenide.headless=true \
