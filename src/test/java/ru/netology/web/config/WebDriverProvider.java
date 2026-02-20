@@ -1,14 +1,22 @@
 package ru.netology.web.config;
 
 import com.codeborne.selenide.Configuration;
-import io.github.bonigarcia.wdm.WebDriverManager;
 
 public class WebDriverProvider {
 
     public static void setup() {
-        WebDriverManager.chromedriver().setup();
+
         Configuration.browser = "chrome";
         Configuration.browserSize = "1366x768";
-        Configuration.headless = false;
+
+        Configuration.headless = Boolean.getBoolean("selenide.headless");
+
+        Configuration.browserCapabilities.setCapability("goog:chromeOptions",
+                new org.openqa.selenium.chrome.ChromeOptions()
+                        .addArguments("--no-sandbox")
+                        .addArguments("--disable-dev-shm-usage")
+                        .addArguments("--disable-gpu")
+                        .addArguments("--remote-allow-origins=*")
+        );
     }
 }
