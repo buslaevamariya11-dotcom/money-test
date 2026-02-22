@@ -23,19 +23,19 @@ jobs:
       - name: Install Chrome
         uses: browser-actions/setup-chrome@v1
 
-      - name: Show Chrome info
+      - name: Show Chrome version
         run: google-chrome --version
 
       - name: Make gradlew executable
         run: chmod +x gradlew
 
-      # ▶ Запуск тестируемого приложения
+      # ▶ Запуск приложения
       - name: Run IBank App
         run: |
           nohup java -jar artifacts/app-ibank-build-for-testers.jar > app.log 2>&1 &
-          sleep 7
+          sleep 8
 
-      # ▶ Проверяем, что сервер поднялся
+      # ▶ Проверка, что сервер поднялся
       - name: Check server availability
         run: |
           for i in {1..10}; do
@@ -52,7 +52,7 @@ jobs:
           exit 1
 
       # ▶ Запуск тестов
-      - name: Run Tests
+      - name: Run tests
         env:
           CHROME_BIN: /usr/bin/google-chrome
         run: |
