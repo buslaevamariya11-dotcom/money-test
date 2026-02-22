@@ -3,6 +3,7 @@ package ru.netology.web.data;
 import lombok.Value;
 
 public class DataHelper {
+
     private DataHelper() {
     }
 
@@ -27,7 +28,7 @@ public class DataHelper {
 
     @Value
     public static class CardInfo {
-        String cardNumber;
+        String number;
     }
 
     public static CardInfo getFirstCard() {
@@ -36,9 +37,5 @@ public class DataHelper {
 
     public static CardInfo getSecondCard() {
         return new CardInfo("5559 0000 0000 0002");
-    }
-
-    public static String getMasked(String fullNumber) {
-        return "**** **** **** " + fullNumber.substring(fullNumber.length() - 4);
     }
 }
