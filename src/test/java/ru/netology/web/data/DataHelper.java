@@ -29,6 +29,14 @@ public class DataHelper {
     @Value
     public static class CardInfo {
         String number;
+
+        public String getId() {
+            return number.substring(number.length() - 4);
+        }
+
+        public String getNumberWithoutSpaces() {
+            return number.replaceAll("\\s+", "");
+        }
     }
 
     public static CardInfo getFirstCard() {

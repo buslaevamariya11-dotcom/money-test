@@ -29,26 +29,18 @@ public class MoneyTransferBugTest {
         val firstCard = DataHelper.getFirstCard();
         val secondCard = DataHelper.getSecondCard();
 
-        String maskedFirst = "**** " +
-                firstCard.getNumber().replace(" ", "")
-                        .substring(firstCard.getNumber().replace(" ", "").length() - 4);
+        int balance1 = dashboard.getCardBalance(firstCard);
+        int balance2 = dashboard.getCardBalance(secondCard);
 
-        String maskedSecond = "**** " +
-                secondCard.getNumber().replace(" ", "")
-                        .substring(secondCard.getNumber().replace(" ", "").length() - 4);
+        int amount = balance2 + 1;
 
-        int balance1 = dashboard.getCardBalance(maskedFirst);
-        int balance2 = dashboard.getCardBalance(maskedSecond);
-
-        int amount = balance1 + 1;
-
-        val transferPage = dashboard.selectCard(secondCard);
-        val dashboardAfter = transferPage.validTransfer(amount, firstCard.getNumber());
+        val transferPage = dashboard.selectCard(firstCard);
+        val dashboardAfter =
+                transferPage.validTransfer(amount, secondCard.getNumberWithoutSpaces());
 
         assertEquals(balance1,
-                dashboardAfter.getCardBalance(maskedFirst));
-
+                dashboardAfter.getCardBalance(firstCard));
         assertEquals(balance2,
-                dashboardAfter.getCardBalance(maskedSecond));
+                dashboardAfter.getCardBalance(secondCard));
     }
 }
