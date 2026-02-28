@@ -18,7 +18,7 @@ public class MoneyTransferBugTest {
     }
 
     @Test
-    @DisplayName("БАГ — можно уйти в минус при переводе сверх баланса")
+    @DisplayName("Нельзя перевести сумму больше остатка")
     void shouldNotAllowTransferMoreThanBalance() {
         val loginPage = new LoginPage();
         val authInfo = DataHelper.getAuthInfo();
@@ -26,18 +26,29 @@ public class MoneyTransferBugTest {
         val verifyCode = DataHelper.getVerificationCodeFor(authInfo);
         val dashboard = verificationPage.validVerify(verifyCode);
 
-        int balance1 = dashboard.getCardBalance("0001");
-        int balance2 = dashboard.getCardBalance("0002");
+        val firstCard = DataHelper.getFirstCard();
+        val secondCard = DataHelper.getSecondCard();
 
-        int amount = balance1 + 5000;
+        String maskedFirst = "**** " +
+                firstCard.getNumber().replace(" ", "")
+                        .substring(firstCard.getNumber().replace(" ", "").length() - 4);
 
-        val topUp = dashboard.selectCard(1);
-        val dashboardAfter = topUp.validTransfer(amount, DataHelper.getFirstCard().getNumber());
+        String maskedSecond = "**** " +
+                secondCard.getNumber().replace(" ", "")
+                        .substring(secondCard.getNumber().replace(" ", "").length() - 4);
 
-        int newBalance1 = dashboardAfter.getCardBalance("0001");
-        int newBalance2 = dashboardAfter.getCardBalance("0002");
+        int balance1 = dashboard.getCardBalance(maskedFirst);
+        int balance2 = dashboard.getCardBalance(maskedSecond);
 
-        assertEquals(balance1, newBalance1, "БАГ! Баланс первой карты изменился, хотя перевод был сверх лимита!");
-        assertEquals(balance2, newBalance2, "БАГ! Баланс второй карты изменился, хотя перевод был сверх лимита!");
+        int amount = balance1 + 1;
+
+        val transferPage = dashboard.selectCard(secondCard);
+        val dashboardAfter = transferPage.validTransfer(amount, firstCard.getNumber());
+
+        assertEquals(balance1,
+                dashboardAfter.getCardBalance(maskedFirst));
+
+        assertEquals(balance2,
+                dashboardAfter.getCardBalance(maskedSecond));
     }
 }
