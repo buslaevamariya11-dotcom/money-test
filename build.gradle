@@ -18,7 +18,13 @@ dependencies {
 test {
     useJUnitPlatform()
 
-    systemProperty 'chromeoptions.prefs',
-            System.getProperty('chromeoptions.prefs',
+    systemProperty "selenide.browser", "chrome"
+    systemProperty "selenide.headless", System.getProperty("selenide.headless", "false")
+
+    systemProperty "chromeoptions.args",
+            "--no-sandbox,--disable-dev-shm-usage,--remote-allow-origins=*"
+
+    systemProperty "chromeoptions.prefs",
+            System.getProperty("chromeoptions.prefs",
                     "profile.password_manager_leak_detection=false")
 }
