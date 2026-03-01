@@ -1,34 +1,32 @@
 package ru.netology.web.page;
 
 import com.codeborne.selenide.SelenideElement;
+import ru.netology.web.data.DataHelper;
 import ru.netology.web.data.DataHelper.CardInfo;
 
-import static com.codeborne.selenide.Condition.text;
-import static com.codeborne.selenide.Selenide.$$;
+import static com.codeborne.selenide.Selenide.$;
 
 public class DashboardPage {
 
     public TopUpPage selectCard(CardInfo card) {
         SelenideElement cardElement =
-                $$("li")
-                        .find(text(card.getId()));
+                $("[data-test-id='" + DataHelper.getCardTestId(card) + "']");
 
         cardElement.$("button").click();
         return new TopUpPage();
     }
 
     public int getCardBalance(CardInfo card) {
-        String value =
-                $$("li")
-                        .find(text(card.getId()))
-                        .getText();
+        SelenideElement cardElement =
+                $("[data-test-id='" + DataHelper.getCardTestId(card) + "']");
 
-        return extractBalance(value);
+        String text = cardElement.getText();
+        return extractBalance(text);
     }
 
     private int extractBalance(String text) {
-        String balancePart = text.substring(text.indexOf("баланс:") + 7);
-        String digitsOnly = balancePart.replaceAll("\\D+", "");
-        return Integer.parseInt(digitsOnly);
+        String balance = text.substring(text.indexOf("баланс:") + 7);
+        balance = balance.replaceAll("[^0-9]", "");
+        return Integer.parseInt(balance);
     }
 }
