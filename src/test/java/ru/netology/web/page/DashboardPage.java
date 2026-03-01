@@ -1,7 +1,6 @@
 package ru.netology.web.page;
 
 import com.codeborne.selenide.SelenideElement;
-import ru.netology.web.data.DataHelper;
 import ru.netology.web.data.DataHelper.CardInfo;
 
 import static com.codeborne.selenide.Selenide.$;
@@ -10,7 +9,7 @@ public class DashboardPage {
 
     public TopUpPage selectCard(CardInfo card) {
         SelenideElement cardElement =
-                $("[data-test-id='" + DataHelper.getCardTestId(card) + "']");
+                $("[data-test-id='" + card.getTestId() + "']");
 
         cardElement.$("button").click();
         return new TopUpPage();
@@ -18,7 +17,7 @@ public class DashboardPage {
 
     public int getCardBalance(CardInfo card) {
         SelenideElement cardElement =
-                $("[data-test-id='" + DataHelper.getCardTestId(card) + "']");
+                $("[data-test-id='" + card.getTestId() + "']");
 
         String text = cardElement.getText();
         return extractBalance(text);

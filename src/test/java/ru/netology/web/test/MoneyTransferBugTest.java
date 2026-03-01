@@ -10,7 +10,7 @@ import ru.netology.web.page.LoginPage;
 import static com.codeborne.selenide.Selenide.open;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class MoneyTransferBugTest extends BaseTest {
+public class MoneyTransferBugTest {
 
     @BeforeEach
     void setup() {
@@ -38,7 +38,7 @@ public class MoneyTransferBugTest extends BaseTest {
 
         val dashboardAfter = transferPage.validTransfer(
                 amount,
-                DataHelper.getCardNumberWithoutSpaces(secondCard.getNumber())
+                secondCard.getNumber().replaceAll("\\s+", "")
         );
 
         assertEquals(balance1,
